@@ -1,6 +1,9 @@
 package html_helper
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 const (
 	closeAngelBracketChar = byte('<')
@@ -28,11 +31,10 @@ func GetHtmlTitle(htmlString string) string {
 	}
 
 	title = htmlString[startIndex:i]
-	title = strings.Replace(title, "\n", "", -1)
-	title = strings.Replace(title, " ", " ", -1)
-	title = strings.TrimSpace(title)
-	title = strings.Replace(title, "\t", " ", -1)
 
+	space := regexp.MustCompile(`\s+`)
+	title = space.ReplaceAllString(title, " ")
+	title = strings.Replace(title, " ", " ", -1)
 
 	return title
 }
@@ -68,9 +70,9 @@ func GetHtmlDescription(htmlStr string) string {
 	}
 
 	description = htmlStr[startIndex:i]
-	description = strings.Replace(description, "\n", "", -1)
-	description = strings.TrimSpace(description)
-	description = strings.Replace(description, "\t", " ", -1)
+
+	space := regexp.MustCompile(`\s+`)
+	description = space.ReplaceAllString(description, " ")
 	description = strings.Replace(description, " ", " ", -1)
 	return description
 }

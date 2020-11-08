@@ -81,12 +81,12 @@ func (r *SiteReceiver) writeStrToBufferByCategory(category, str string) {
 
 	if writer.Length() > maxBufferLength {
 		buf := writer.GetBuffer()
+		writer.SetBuffer(r.BufferPool.Get())
 		go func() {
 			r.writeToFileByCategory(category, buf)
 			buf.Reset()
 			r.BufferPool.Put(buf)
 		}()
-		writer.SetBuffer(r.BufferPool.Get())
 	}
 
 	writer.Write(str)
