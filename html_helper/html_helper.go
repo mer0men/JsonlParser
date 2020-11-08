@@ -1,78 +1,35 @@
 package html_helper
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"regexp"
 	"strings"
 )
 
-const (
-	closeAngelBracketChar = byte('<')
-	backSlashChar         = byte('\\')
-	closeBracket          = byte('"')
-)
+func GetHtmlTitleAndDescription(html []byte) (title, description string, err error) {
+	htmlReader := bytes.NewReader(html)
 
-func GetHtmlTitle(htmlString string) string {
-	var title string
-	var isCloseChar bool
-	substr := "<title>"
-	i := strings.Index(htmlString, substr)
-	if i == -1 {
-		return ""
+	doc, err := goquery.NewDocumentFromReader(htmlReader)
+	if err != nil {
+		return title, description, errors.New(fmt.Sprintf("Failde to parse html: %v", err))
 	}
-
-	i += 7
-	startIndex := i
-
-	for !isCloseChar {
-		i++
-		if htmlString[i] == closeAngelBracketChar {
-			isCloseChar = true
-		}
+	metaTag := doc.Find(`meta[name$=escription]`)
+	description, _ = metaTag.Attr("content")
+	if description == "" {
+		metaTag = doc.Find(`meta[property$=escription]`)
+		description, _ = metaTag.Attr("content")
 	}
+	spaceRegExp := regexp.MustCompile(`\s+`)
 
-	title = htmlString[startIndex:i]
-
-	space := regexp.MustCompile(`\s+`)
-	title = space.ReplaceAllString(title, " ")
-	title = strings.Replace(title, " ", " ", -1)
-
-	return title
-}
-
-func GetHtmlDescription(htmlStr string) string {
-	var description string
-	var isCloseChar bool
-	var lastChar byte
-	substrLower := "name=\"description\" content=\""
-	substrUpper := "name=\"Description\" content=\""
-
-	i := strings.Index(htmlStr, substrLower)
-	if i == -1 {
-		i = strings.Index(htmlStr, substrUpper)
-		if i == -1 {
-			return ""
-		}
-	}
-
-	i += len(substrLower)
-	startIndex := i
-
-	lastChar = htmlStr[i]
-
-	for !isCloseChar {
-		i++
-		curChar := htmlStr[i]
-		if curChar == closeBracket && lastChar != backSlashChar {
-			isCloseChar = true
-		} else {
-			lastChar = curChar
-		}
-	}
-
-	description = htmlStr[startIndex:i]
-
-	space := regexp.MustCompile(`\s+`)
-	description = space.ReplaceAllString(description, " ")
+	description = spaceRegExp.ReplaceAllString(description, " ")
 	description = strings.Replace(description, " ", " ", -1)
-	return description
+
+	titleTag := doc.Find("title")
+	title = titleTag.Text()
+	title = spaceRegExp.ReplaceAllString(title, " ")
+	title = strings.Replace(title, " ", " ", -1)
+	return title, description, nil
 }

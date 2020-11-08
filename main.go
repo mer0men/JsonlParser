@@ -1,9 +1,11 @@
 package main
 
 import (
-	jsonl_reader "Meromen/JsonlParser/jsonl_reader"
-	site_writer "Meromen/JsonlParser/site_writer"
+	"Meromen/JsonlParser/jsonl_reader"
+	"Meromen/JsonlParser/site_writer"
 	"context"
+	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"sync"
@@ -25,20 +27,22 @@ func main() {
 	sr := jsonl_reader.JsonlSiteReader{}
 	siteChan, err := sr.ReadFileToChannel("500.jsonl")
 	if err != nil {
-		panic(err)
+		log.Fatal(fmt.Sprintf("Failed to read file: %v", err))
 	}
 
+	totalSuccessProcessed := 0
 	r := site_writer.NewSiteReceiver()
 	for i := 0; i < workerCount; i++ {
 		wg.Add(1)
 		go func() {
-			r.Receive(ctx, siteChan)
+			successProcessed := r.Receive(ctx, siteChan)
+			totalSuccessProcessed +=successProcessed
 			wg.Done()
 		}()
 	}
 
 	wg.Wait()
-
 	r.WriteRemainingTextFromBuffers()
-	//r.Receive(context.Background(), siteChan)
+
+	log.Println(fmt.Sprintf("Receive complete: %d successfuly processed sites", totalSuccessProcessed))
 }

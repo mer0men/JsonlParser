@@ -6,7 +6,7 @@ import (
 )
 
 type SiteWriter struct {
-	m *sync.Mutex
+	m      *sync.Mutex
 	buffer *bytes.Buffer
 }
 
@@ -29,4 +29,3 @@ func (w *SiteWriter) Write(s string) {
 func (w *SiteWriter) Length() int {
 	return w.buffer.Len()
 }
-

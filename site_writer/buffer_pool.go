@@ -11,13 +11,14 @@ type BufferPool struct {
 
 func NewBufferPool() BufferPool {
 	return BufferPool{
-		pool: &sync.Pool{New: func() interface{} {
-			return &bytes.Buffer{}
+		pool: &sync.Pool{
+			New: func() interface{} {
+				return &bytes.Buffer{}
 		}},
 	}
 }
 
-func (m *BufferPool) Get() *bytes.Buffer{
+func (m *BufferPool) Get() *bytes.Buffer {
 	return m.pool.Get().(*bytes.Buffer)
 }
 

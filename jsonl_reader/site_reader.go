@@ -2,18 +2,14 @@ package jsonl_reader
 
 import (
 	"bufio"
-	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
 type JsonlSiteReader struct {
 	siteChan chan Site
-}
-
-func (jr *JsonlSiteReader) SiteChanel(c context.Context) <-chan Site {
-	return jr.siteChan
 }
 
 func (jr *JsonlSiteReader) ReadFileToChannel(filename string) (<-chan Site, error) {
@@ -26,7 +22,7 @@ func (jr *JsonlSiteReader) ReadFileToChannel(filename string) (<-chan Site, erro
 
 	go func() {
 		for scanner.Scan() {
-			jsonString :=  scanner.Text()
+			jsonString := scanner.Text()
 			if jsonString != "" {
 				site := Site{}
 				json.Unmarshal([]byte(jsonString), &site)
@@ -38,9 +34,8 @@ func (jr *JsonlSiteReader) ReadFileToChannel(filename string) (<-chan Site, erro
 		}
 		close(jr.siteChan)
 		file.Close()
-		fmt.Println("complete reading ")
 		if err := scanner.Err(); err != nil {
-			panic(err)
+			log.Fatal(fmt.Sprintf("Failed to read file: %v", err))
 		}
 	}()
 
