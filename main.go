@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Meromen/JsonlParser/jsonl_reader"
-	"Meromen/JsonlParser/site_writer"
+	"github.com/Meromen/JsonlParser/jsonl_reader"
+	"github.com/Meromen/JsonlParser/site_writer"
 	"context"
 	"fmt"
 	"log"

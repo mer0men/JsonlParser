@@ -1,8 +1,8 @@
 package site_writer
 
 import (
-	"Meromen/JsonlParser/html_helper"
-	"Meromen/JsonlParser/jsonl_reader"
+	"github.com/Meromen/JsonlParser/html_helper"
+	"github.com/Meromen/JsonlParser/jsonl_reader"
 	"bytes"
 	"context"
 	"errors"
