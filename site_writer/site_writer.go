@@ -27,5 +27,8 @@ func (w *SiteWriter) Write(s string) {
 }
 
 func (w *SiteWriter) Length() int {
-	return w.buffer.Len()
+	w.m.Lock()
+	l := w.buffer.Len()
+	w.m.Unlock()
+	return l
 }

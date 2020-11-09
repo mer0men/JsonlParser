@@ -1,12 +1,12 @@
 package site_writer
 
 import (
-	"github.com/Meromen/JsonlParser/html_helper"
-	"github.com/Meromen/JsonlParser/jsonl_reader"
 	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/Meromen/JsonlParser/html_helper"
+	"github.com/Meromen/JsonlParser/jsonl_reader"
 	"io/ioutil"
 	"log"
 	"net/http"
