@@ -1,4 +1,4 @@
-module Meromen/JsonlParser
+module github.com/Meromen/JsonlParser
 
 go 1.15
 
